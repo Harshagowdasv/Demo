@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<style>
+
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        
+    }
+    #grid{
+        display: grid;
+        grid-template-columns: repeat(10,40px);
+        grid-template-rows: repeat(10,40px);
+        gap: 2px;
+        width: fit-content;
+    }
+
+    .cell{
+        width: 40px;
+        height: 40px;
+        background: grey;
+        cursor: pointer;
+    }
+
+    .p1{
+        background-color: skyblue;
+    }
+
+    .p2{
+        background-color: orange;
+    }
+
+    #turn{
+        font-size: 25px;
+    }
+
+    .danger{
+        background-color: red;
+    }
+</style>
+<body>
+
+    <div id="turn">1'st Player Turn</div>
+    <div id="grid"></div>
+</body>
+
+<script>
+    let turn=document.getElementById("turn");
+    let grid=document.getElementById("grid");
+
+    const totalcells=100;
+    const dangercells=15;
+
+    let currentPlayer=1;
+
+    let dangerPositions=new Set();
+    while(dangerPositions.size<dangercells){
+        dangerPositions.add(Math.floor(Math.random()*totalcells));
+    }
+
+    for(i=0;i<totalcells;i++){
+        let cell=document.createElement("div");
+        cell.classList.add("cell");
+
+        if(dangerPositions.has(i)){
+            cell.dataset.type="danger";
+        }else{
+            cell.dataset.type="safe";
+        }
+
+        cell.addEventListener("click",()=>{
+            if(cell.dataset.clicked==="true")return;
+            cell.dataset.clicked="true";
+
+            if(cell.dataset.type==="danger"){
+                cell.classList.add("danger");
+                setTimeout(()=>{
+                    if(currentPlayer===1){
+                        alert("Player 1 is Clicked danger position ,so Player 2 Won");
+                    }else{
+                        alert("Player 2 is Clicked danger position ,so Player 1 Won");
+                    }
+                    location.reload();
+                },100);
+            }else{
+                if(currentPlayer===1){
+                    cell.classList.add("p1");
+                    currentPlayer=2;
+                    turn.textContent="It's Player 2 Turn!";
+                }else{
+                    cell.classList.add("p2");
+                    currentPlayer=1;
+                    turn.textContent="It's PLayer 1 Turn!";
+                }
+            }
+        });
+        grid.appendChild(cell);
+    }
+</script>
+</html>
